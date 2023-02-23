@@ -1,4 +1,4 @@
-#region License
+﻿#region License
 
 /*
  * WebSocket.cs
@@ -328,6 +328,8 @@ namespace WebSocketSharp.NetCore
         #endregion
 
         #region Public Properties
+
+        public IEnumerable<KeyValuePair<string,string>> CustomHeaders { get; set; }
 
         /// <summary>
         /// Gets or sets the compression method used to compress a message.
@@ -2168,6 +2170,13 @@ namespace WebSocketSharp.NetCore
         private HttpResponse sendHandshakeRequest()
         {
             var req = createHandshakeRequest();
+            if (CustomHeaders != null)
+            {
+                foreach (var header in CustomHeaders)
+                {
+                    req.Headers.Add(header.Key, header.Value);
+                }
+            }
             var res = sendHttpRequest(req, 90000);
             if (res.IsUnauthorized)
             {
